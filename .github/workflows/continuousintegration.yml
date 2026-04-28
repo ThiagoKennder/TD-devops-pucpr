@@ -21,7 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Run Discord Webhook
         uses: Snidd1/discord-commits@v1.6
         with:
