@@ -1,27 +1,46 @@
-name: Continuous Integration
+name: Integração Contínua
+
 on:
+  push:
+    branches: [ "main" ]
   pull_request:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out repository code
+      - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Python Lint Code Scanning Action
-        uses: advanced-security/python-lint-code-scanning-action@v1.1.3
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
         with:
-          linter: pylint
+          node-version: '18'
 
+      - name: Instalar dependências
+        run: npm install
 
-discord:
-  runs-on: ubuntu-latest
-  steps:
-    - name: Notificar Discord
-      run: |
-        curl -H "Content-Type: application/json" \
-        -d '{"content": "Deploy concluído 🚀"}' \
-        ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Rodar testes
+        run: npm test
+
+  discord:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Notificar Discord (SUCESSO)
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d '{"content": "✅ Build e testes passaram com sucesso 🚀"}' \
+          ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: Notificar Discord (ERRO)
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d '{"content": "❌ Falha no build ou nos testes ⚠️"}' \
+          ${{ secrets.DISCORD_WEBHOOK }}
