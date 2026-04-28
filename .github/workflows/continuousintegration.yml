@@ -21,10 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Enviar mensagem para o Discord
-        uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_USERNAME: GitHub Actions
-          DISCORD_MESSAGE: "Build concluído com sucesso 🚀"
+      - name: Run Discord Webhook
+        uses: Snidd1/discord-commits@v1.6
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
+          template: "avatar-with-link"
+          include-extras: true
