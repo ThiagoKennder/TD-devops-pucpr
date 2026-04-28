@@ -17,13 +17,11 @@ jobs:
           linter: pylint
 
 
-  discord:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run Discord Webhook
-        uses: Snidd1/discord-commits@v1.6
-        with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
-          template: "avatar-with-link"
-          include-extras: true
+discord:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Notificar Discord
+      run: |
+        curl -H "Content-Type: application/json" \
+        -d '{"content": "Deploy concluído 🚀"}' \
+        ${{ secrets.DISCORD_WEBHOOK }}
